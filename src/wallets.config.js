@@ -7,15 +7,15 @@
 const wallets = [
   {
     label: "Ghost Wallet 1",
-    address: "0xYOUR_GHOST_WALLET_1_ADDRESS_HERE",
+    address: "0xd218e474776403a330142299f7796e8ba32eb5c9",
   },
   {
     label: "Ghost Wallet 2",
-    address: "0xYOUR_GHOST_WALLET_2_ADDRESS_HERE",
+    address: "0xee613b3fc183ee44f9da9c05f53e2da107e3debf",
   },
   {
     label: "Copy Wallet (Bot)",
-    address: "0xYOUR_BOT_COPY_WALLET_ADDRESS_HERE",
+    address: "0x04a39d068f4301195c25dcb4c1fe5a4f08a65213",
   },
   // Add more wallets below like this:
   // {
