@@ -34,10 +34,9 @@ export function useWalletData(wallets) {
           const pnl = calculatePnL(trades);
 
           // Calculate unrealized value from open positions
+          // Data API returns currentValue (dollar value) directly
           const unrealizedValue = positions.reduce((sum, p) => {
-            const size = parseFloat(p.size || p.currentSize || 0);
-            const price = parseFloat(p.curPrice || p.price || 0);
-            return sum + size * price;
+            return sum + parseFloat(p.currentValue || 0);
           }, 0);
 
           return {

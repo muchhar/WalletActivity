@@ -1,8 +1,9 @@
-import { startOfDay, startOfWeek, isAfter, parseISO } from "date-fns";
+import { startOfDay, startOfWeek, isAfter, fromUnixTime } from "date-fns";
 
 /**
- * Calculate P&L from a list of trades for a wallet.
- * Polymarket trades have: price, size, side (BUY/SELL), outcome, asset_id, timestamp
+ * Calculate P&L from activity trades returned by data-api.polymarket.com
+ * Fields: usdcSize (dollar value), side (BUY/SELL), timestamp (unix seconds),
+ *         price, size (token count), title (market name)
  */
 export function calculatePnL(trades) {
   const now = new Date();
@@ -16,27 +17,20 @@ export function calculatePnL(trades) {
   const dailyData = {}; // { "YYYY-MM-DD": pnl }
 
   for (const trade of trades) {
-    const tradeTime = parseISO(trade.timestamp || trade.created_at || new Date().toISOString());
+    // Data API uses unix timestamp in seconds
+    const tradeTime = fromUnixTime(trade.timestamp || 0);
     const side = (trade.side || "").toUpperCase();
-    const price = parseFloat(trade.price || 0);
-    const size = parseFloat(trade.size || trade.original_size || 0);
 
-    // Cost basis: BUY costs money, SELL returns money
-    let pnlImpact = 0;
-    if (side === "BUY") {
-      pnlImpact = -(price * size); // spent money
-    } else if (side === "SELL") {
-      pnlImpact = price * size; // received money
-    }
+    // usdcSize = actual dollar amount spent/received
+    const usdcValue = parseFloat(trade.usdcSize || 0);
+
+    // BUY = money out (negative PnL impact), SELL = money in (positive)
+    const pnlImpact = side === "BUY" ? -usdcValue : side === "SELL" ? usdcValue : 0;
 
     totalPnL += pnlImpact;
 
-    if (isAfter(tradeTime, todayStart)) {
-      dailyPnL += pnlImpact;
-    }
-    if (isAfter(tradeTime, weekStart)) {
-      weeklyPnL += pnlImpact;
-    }
+    if (isAfter(tradeTime, todayStart)) dailyPnL += pnlImpact;
+    if (isAfter(tradeTime, weekStart)) weeklyPnL += pnlImpact;
 
     // Group by day for chart
     const dayKey = tradeTime.toISOString().split("T")[0];
@@ -47,10 +41,7 @@ export function calculatePnL(trades) {
   // Build chart data sorted by date
   const chartData = Object.entries(dailyData)
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, pnl]) => ({
-      date,
-      pnl: parseFloat(pnl.toFixed(2)),
-    }));
+    .map(([date, pnl]) => ({ date, pnl: parseFloat(pnl.toFixed(2)) }));
 
   // Add cumulative
   let cumulative = 0;
