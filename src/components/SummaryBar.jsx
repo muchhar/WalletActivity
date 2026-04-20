@@ -49,6 +49,16 @@ export default function SummaryBar({ walletsData }) {
             : isPos
               ? "#00ff8710"
               : "#ff5c5c10";
+
+          const text = `${!s.neutral && (isPos ? "+" : "")}${formatUSDPlain(s.value)}`;
+          const len  = text.length;
+          // Scale font so the full number always fits — no clipping.
+          const size =
+            len <= 10 ? "text-3xl"  :
+            len <= 13 ? "text-2xl"  :
+            len <= 16 ? "text-xl"   :
+                        "text-lg";
+
           return (
             <div
               key={s.label}
@@ -59,9 +69,11 @@ export default function SummaryBar({ walletsData }) {
                 <p className="text-[#6b7280] text-[10px] font-mono uppercase tracking-[0.2em] mb-2">
                   {s.label}
                 </p>
-                <p className={`text-3xl font-display font-bold ${tone}`}>
-                  {!s.neutral && (isPos ? "+" : "")}
-                  {formatUSDPlain(s.value)}
+                <p
+                  className={`${size} font-display font-bold tabular-nums break-all leading-tight ${tone}`}
+                  title={text}
+                >
+                  {text}
                 </p>
                 <p className="text-[#4b5563] font-mono text-[11px] mt-1">{s.sub}</p>
               </div>
@@ -86,19 +98,20 @@ export default function SummaryBar({ walletsData }) {
             return (
               <div
                 key={key}
-                className="flex items-center justify-between bg-[#05070a] border border-[#14171b] rounded-xl px-3 py-2"
+                className="flex items-center justify-between gap-2 bg-[#05070a] border border-[#14171b] rounded-xl px-3 py-2"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <span
-                    className="w-2 h-2 rounded-full"
+                    className="w-2 h-2 rounded-full shrink-0"
                     style={{ background: meta.color, boxShadow: `0 0 8px ${meta.color}` }}
                   />
                   <span className="text-[#9ca3af] font-mono text-xs">{meta.label}</span>
                 </div>
                 <span
-                  className={`font-mono text-xs font-semibold ${
+                  className={`font-mono text-xs font-semibold tabular-nums text-right break-all ${
                     pos ? "text-[#00ff87]" : "text-[#ff5c5c]"
                   }`}
+                  title={formatUSDPlain(v)}
                 >
                   {pos ? "+" : ""}
                   {formatUSDPlain(v)}

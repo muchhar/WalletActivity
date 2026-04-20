@@ -17,14 +17,23 @@ function StatBox({ label, value, highlight, neutral }) {
         : "text-[#ff5c5c]"
       : "text-white";
 
+  // Scale font down for longer strings so full number is always visible —
+  // no ellipsis, no truncation.
+  const len = String(display).length;
+  const size =
+    len <= 9  ? "text-[15px]" :
+    len <= 12 ? "text-[13px]" :
+    len <= 15 ? "text-[12px]" :
+                "text-[11px]";
+
   return (
-    <div className="min-w-0 bg-[#05070a] border border-[#14171b] rounded-lg p-2.5 overflow-hidden">
-      <p className="text-[#4b5563] text-[10px] font-mono uppercase tracking-[0.15em] mb-1 truncate">
+    <div className="bg-[#05070a] border border-[#14171b] rounded-lg p-2.5">
+      <p className="text-[#4b5563] text-[10px] font-mono uppercase tracking-[0.15em] mb-1">
         {label}
       </p>
       <p
-        className={`font-mono font-bold text-sm md:text-[15px] leading-tight whitespace-nowrap overflow-hidden text-ellipsis ${tone}`}
-        title={typeof value === "number" ? String(value) : display}
+        className={`font-mono font-bold leading-tight tabular-nums break-all ${size} ${tone}`}
+        title={display}
       >
         {display}
       </p>
@@ -89,14 +98,15 @@ export default function WalletCard({ wallet }) {
           </div>
 
           {!error && pnl && (
-            <div className="text-right shrink-0">
+            <div className="text-right shrink-0 max-w-[45%]">
               <p className="text-[#4b5563] text-[10px] font-mono uppercase tracking-widest">
                 All-Time
               </p>
               <p
-                className={`font-mono font-bold text-sm leading-tight ${
+                className={`font-mono font-bold text-sm leading-tight tabular-nums break-all ${
                   pnl.totalPnL >= 0 ? "text-[#00ff87]" : "text-[#ff5c5c]"
                 }`}
+                title={formatUSD(pnl.totalPnL)}
               >
                 {formatUSD(pnl.totalPnL)}
               </p>
@@ -108,8 +118,8 @@ export default function WalletCard({ wallet }) {
           <div className="px-4 py-6 text-[#ff5c5c] font-mono text-xs break-all">{error}</div>
         ) : (
           <>
-            {/* Stats grid */}
-            <div className="grid grid-cols-2 gap-2 p-4 lg:grid-cols-4">
+            {/* Stats grid — 2 cols keeps numbers readable without truncation */}
+            <div className="grid grid-cols-2 gap-2 p-4">
               <StatBox label="Today"    value={pnl.dailyPnL}   highlight />
               <StatBox label="Week"     value={pnl.weeklyPnL}  highlight />
               <StatBox label="Trades"   value={pnl.tradeCount} neutral />
