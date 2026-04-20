@@ -50,7 +50,8 @@ export default function SummaryBar({ walletsData }) {
               ? "#00ff8710"
               : "#ff5c5c10";
 
-          const text = `${!s.neutral && (isPos ? "+" : "")}${formatUSDPlain(s.value)}`;
+          const sign = s.neutral ? "" : isPos ? "+" : "";
+          const text = `${sign}${formatUSDPlain(s.value)}`;
           const len  = text.length;
           // Scale font so the full number always fits — no clipping.
           const size =
