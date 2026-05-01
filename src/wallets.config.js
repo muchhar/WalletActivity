@@ -98,6 +98,33 @@ const wallets = [
     address: "0x63ce342161250d705dc0b16df89036c8e5f9ba9a",
     category: "mixed",
   },
+
+
+  {
+    label: "LaBradfordSmith22",
+    address: "0x9495425feeb0c250accb89275c97587011b19a27",
+    category: "Sports",
+  },
+  {
+    label: "Tiger200",
+    address: "0x6211f97a76ed5c4b1d658f637041ac5f293db89e",
+    category: "Sports",
+  },
+  {
+    label: "BBPK",
+    address: "0xbddf61af533ff524d27154e589d2d7a81510c684",
+    category: "Sports",
+  },
+  {
+    label: "Handsanitizer23",
+    address: "0x05e70727a2e2dcd079baa2ef1c0b88af06bb9641",
+    category: "Weather",
+  },
+  {
+    label: "ColdMath",
+    address: "0x594edb9112f526fa6a80b8f858a6379c8a2c1c11",
+    category: "Weather",
+  }
 ];
 
 // ---------- Category metadata (for UI / colors / icons) ----------
